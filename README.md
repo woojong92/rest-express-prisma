@@ -1,6 +1,6 @@
 # REST API Example
 
-This example shows how to implement a **REST API with TypeScript** using [Express](https://expressjs.com/) and [Prisma Client](https://github.com/prisma/prisma2/blob/master/docs/prisma-client-js/api.md). It is based on a SQLite database, you can find the database file with some dummy data at [`./prisma/dev.db`](./prisma/dev.db).
+This example shows how to implement a **REST API** using [Express](https://expressjs.com/) and [Prisma Client](https://github.com/prisma/prisma2/blob/master/docs/prisma-client-js/api.md). It uses a SQLite database file with some initial dummy data which you can find at [`./prisma/dev.db`](./prisma/dev.db).
 
 ## How to use
 
@@ -15,15 +15,13 @@ git clone git@github.com:prisma/prisma-examples.git --depth=1
 Install npm dependencies:
 
 ```
-cd prisma-examples/typescript/rest-express
+cd prisma-examples/javascript/rest-express
 npm install
 ```
 
 Note that this also generates Prisma Client JS into `node_modules/@prisma/client` via a `postinstall` hook of the `@prisma/client` package from your `package.json`.
 
 ### 2. Start the REST API server
-
-Execute this command to start the server:
 
 ```
 npm run dev
@@ -113,26 +111,29 @@ npx prisma introspect
 The `introspect` command updates your `schema.prisma` file. It now includes the `Profile` model and its 1:1 relation to `User`:
 
 ```prisma
-model Post {
-  author    User?
-  content   String?
-  id        Int     @id
-  published Boolean @default(false)
-  title     String
-}
 
 model User {
   email   String   @unique
-  id      Int      @id
+  id      Int      @default(autoincrement()) @id
   name    String?
-  post    Post[]
-  profile Profile?
+  Post    Post[]
+  Profile Profile?
+}
+
+model Post {
+  authorId  Int?
+  content   String?
+  id        Int     @default(autoincrement()) @id
+  published Boolean @default(false)
+  title     String
+  User      User?   @relation(fields: [authorId], references: [id])
 }
 
 model Profile {
   bio  String?
-  id   Int     @id
-  user User
+  id   Int     @default(autoincrement()) @id
+  user String  @unique
+  User User    @relation(fields: [user], references: [id])
 }
 ```
 
@@ -198,6 +199,7 @@ const userWithUpdatedProfile = await prisma.user.update({
 
 - Read the holistic, step-by-step [Prisma Framework tutorial](https://github.com/prisma/prisma2/blob/master/docs/tutorial.md)
 - Check out the [Prisma Framework docs](https://github.com/prisma/prisma2) (e.g. for [data modeling](https://github.com/prisma/prisma2/blob/master/docs/data-modeling.md), [relations](https://github.com/prisma/prisma2/blob/master/docs/relations.md) or the [Prisma Client API](https://github.com/prisma/prisma2/tree/master/docs/prisma-client-js/api.md))
-- Share your feedback in the [`prisma2-preview`](https://prisma.slack.com/messages/CKQTGR6T0/) channel on the [Prisma Slack](https://slack.prisma.io/)
+- Share your feedback in the [`prisma2-preview`](https://prisma.slack.com/messages/CKQTGR6T0/) channel on the Prisma Slack
 - Create issues and ask questions on [GitHub](https://github.com/prisma/prisma2/)
 - Track Prisma 2's progress on [`isprisma2ready.com`](https://isprisma2ready.com)
+

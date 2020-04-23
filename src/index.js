@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client'
-import * as bodyParser from 'body-parser'
-import express from 'express'
+const express = require('express')
+const bodyParser = require('body-parser')
+const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 const app = express()
@@ -32,7 +32,7 @@ app.post(`/post`, async (req, res) => {
 app.put('/publish/:id', async (req, res) => {
   const { id } = req.params
   const post = await prisma.post.update({
-    where: { id: Number(id) },
+    where: { id },
     data: { published: true },
   })
   res.json(post)
@@ -42,7 +42,7 @@ app.delete(`/post/:id`, async (req, res) => {
   const { id } = req.params
   const post = await prisma.post.delete({
     where: {
-      id: Number(id),
+      id,
     },
   })
   res.json(post)
@@ -52,22 +52,22 @@ app.get(`/post/:id`, async (req, res) => {
   const { id } = req.params
   const post = await prisma.post.findOne({
     where: {
-      id: Number(id),
+      id,
     },
   })
   res.json(post)
 })
 
 app.get('/feed', async (req, res) => {
-  const posts = await prisma.post.findMany({
+  const posts = await prisma.post.findMany({ 
     where: { published: true },
-    include: { author: true }
+    include: { author: true } 
   })
   res.json(posts)
 })
 
 app.get('/filterPosts', async (req, res) => {
-  const { searchString }: { searchString?: string } = req.query;
+  const { searchString } = req.query
   const draftPosts = await prisma.post.findMany({
     where: {
       OR: [
