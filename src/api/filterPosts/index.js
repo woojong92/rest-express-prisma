@@ -8,12 +8,19 @@ filterPosts("/", async (req, res ) => {
     const { searchString } = req.query
     const resultPosts = await prisma.post.findMany({
       where: {
-        OR: [
+        AND: [
           {
-            title: { contains: searchString },
+            published: true,
           },
           {
-            content: { contains: searchString },
+            OR: [
+              {
+                title: { contains: searchString },
+              },
+              {
+                content: { contains: searchString },
+              },
+            ],
           },
         ],
       },

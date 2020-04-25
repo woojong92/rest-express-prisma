@@ -3,26 +3,60 @@ import cuid from "cuid";
 const prisma = new PrismaClient();
 
 export const list = async (req, res) => {
-    const posts = await prisma.post.findMany({
-        where: { published: true },
-        include: { author: true}
-    });
-    return res
-        .status(200)
-        .json(posts);
+    // const { tag, username } = req.query;
+    // const query = {
+    //     ...(username ? { 'user.username': username } :  {}),
+    //     ...(tag ? { tags: tag } :  {}),
+    // };
+    try{
+        const posts = await prisma.post.findMany({
+            where: { published: true },
+            include: { author: true}
+        });
+        return res
+            .status(200)
+            .json({
+                ok: true,
+                data: posts,
+                error: null
+            });
+    }catch(error){
+        return res
+                .status(400)
+                .json({
+                    ok: false,
+                    data: null,
+                    error: error.message
+                })       
+    }
 };
 
 export const write = async (req, res) => {
-    const _cuid = cuid();
-    const result = await prisma.post.create({
-        data: {
-            ...req.body,
-            id: _cuid
-        }
-    });
-    return res
-        .status(200)
-        .json(result);
+    try{
+        const _cuid = cuid();
+        const post = await prisma.post.create({
+            data: {
+                ...req.body,
+                id: _cuid
+            }
+        });
+        return res
+                .status(200)
+                .json({
+                    ok: true,
+                    data: post,
+                    error: null
+                });
+    }catch(error){
+        return res
+                .status(400)
+                .json({
+                    ok: false,
+                    data: null,
+                    error: error.message
+                })
+    }
+
 };
 
 // app.post(`/post`, async (req, res) => {
@@ -49,37 +83,105 @@ export const write = async (req, res) => {
 
 // GET /api/post/:id
 export const read = async (req, res) => {
-    const postId = req.params.id;
-    const post = await prisma.post.findOne({ 
-        where: { id: Number(postId) },
-        include: { author: true },
-    });
-    return res
-        .status(200)
-        .json(post)
+    if(!req.params.id){
+        return res      
+                .status(400)
+                .json({
+                    ok: false,
+                    data: null,
+                    error: "BAD REQUEST"
+                })
+    }
+    try{
+        const post = await prisma.post.findOne({ 
+            where: { id: req.params.id },
+            include: { author: true },
+        });
+        return res
+                .status(200)
+                .json({
+                    ok: true,
+                    data: post,
+                    error: null
+                })
+    }catch(error){
+        return res      
+                .status(400)
+                .json({
+                    ok: false,
+                    data: null,
+                    error: error.message
+                })
+    }
+
 }
 
 // DELETE /api/post/:id
 export const remove = async (req, res) => {
-    const postId = req.params.id;
-    const post = await prisma.post.delete({ 
-        where: { id: Number(postId) }
-    });
-    return res
-        .status(200)
-        .json(post)
+    if(!req.params.id){
+        return res      
+                .status(400)
+                .json({
+                    ok: false,
+                    data: null,
+                    error: "BAD REQUEST"
+                })
+    }
+    try{
+        const post = await prisma.post.delete({ 
+            where: { id: req.params.id }
+        });
+        return res
+            .status(200)
+            .json({
+                ok: true,
+                data: post,
+                error: null
+            })
+    }catch(error){
+        return res
+        .status(400)
+        .json({
+            ok: false,
+            data: null,
+            error: error.message
+        })
+    }
 }
 
 // PATCH /api/post/:id
 // 수정중...
 export const update = async (req, res) => {
-    const postId = req.params.id;
-    const post = await prisma.post.update({ 
-        where: { id: Number(postId) }
-    });
-    return res
-        .status(200)
-        .json(post)
+    if(!req.params.id){
+        return res      
+                .status(400)
+                .json({
+                    ok: false,
+                    data: null,
+                    error: "BAD REQUEST"
+                })
+    }
+    try{ 
+        const post = await prisma.post.update({ 
+            where: { id: req.params.id }
+        });
+        return res
+            .status(200)
+            .json({
+                ok: true,
+                data: post,
+                error: null
+            })
+    }catch(error){
+        return res
+                .status(400)
+                .json({
+                    ok: false,
+                    data: null,
+                    error: error.message
+                })
+    }
+
 }
 
 // PUT /api/post/:id

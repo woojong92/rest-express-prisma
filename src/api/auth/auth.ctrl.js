@@ -113,7 +113,7 @@ export const refresh = (req, res) => {
         const payload = decodeToken("REFRESH", refreshToken); 
         
         const userId = payload.userId;
-        const accessToken = generateToken("REFRESH", userId)
+        const accessToken = generateToken("ACCESS", userId)
         const newRefreshToken = generateToken("REFRESH", userId)
         return res
             .status(200)

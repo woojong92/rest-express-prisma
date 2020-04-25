@@ -16,12 +16,16 @@ CREATE TABLE "public"."User" (
 );
 
 -- 팔로워
-CREATE TABLE "public"."Follow" (
+CREATE TABLE "public"."Follower" (
+    "userId" VARCHAR (50) PRIMARY KEY NOT NULL,
+    "followerId" INTEGER NOT NULL,
+    FOREIGN KEY ("followerId") REFERENCES "public"."User"(id)
+);
+
+CREATE TABLE "public"."Following" (
     id SERIAL PRIMARY KEY NOT NULL,
     "followingId" INTEGER NOT NULL,
     FOREIGN KEY ("followingId") REFERENCES "public"."User"(id),
-    "followerId" INTEGER NOT NULL,
-    FOREIGN KEY ("followerId") REFERENCES "public"."User"(id)
 );
 
 
