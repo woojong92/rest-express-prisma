@@ -1,4 +1,5 @@
 import express from "express";
+import asyncify from "express-asyncify";
 import posts from "./posts";
 import auth from "./auth";
 import me from "./me";
@@ -6,7 +7,7 @@ import drafts from "./drafts";
 import publish from "./publish";
 import published from "./published";
 
-const api = express.Router(); // 새로 생겼어요!
+const api = asyncify(express.Router()); // 새로 생겼어요!
 
 api.use("/auth", auth);
 api.use("/me", me);

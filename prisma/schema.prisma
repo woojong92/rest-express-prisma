@@ -14,12 +14,12 @@ model User {
   createdAt     DateTime  @default(now())
   email         String?   @unique
   gender        String?
-  id            Int       @default(autoincrement()) @id
-  name          String?
+  id            String    @id
+  name          String
   password      String?
   phone         String?   @unique
   updatedAt     DateTime?
-  username      String?
+  username      String
   verifiedEmail Boolean   @default(false)
   verifiedPhone Boolean   @default(false)
 }

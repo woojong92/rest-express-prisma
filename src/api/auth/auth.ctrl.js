@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 import cuid from "cuid";
 
 
-export const register = async (req, res) => {
+export const register =  async (req, res) => {
     const { email } = req.body;
     try{
         const existingUser = await prisma.user.findOne({where: {email}});
-        if(!existingUser){
+        if(existingUser){
             res.status(409).json({
                 ok: false,
                 error: "이미 존재하는 이메일 입니다."
@@ -43,7 +43,7 @@ export const login = async (req, res) => {
     // username, password를 넘겨주면,
     // access token, refresh token을 반환함
     const { username, email, password } = req.body;
-    if(!username || password ){
+    if(!username || !password ){
         res.status(401); // Unauthorized;
         return;
     }

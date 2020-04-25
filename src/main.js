@@ -1,15 +1,11 @@
-require("dotenv").config();
+require('dotenv').config();
 import express from "express";
 import bodyParser from "body-parser";
-// import { PrismaClient } from "@prisma/client";
 import api from "./api";
-
-// const prisma = new PrismaClient();
 
 const app = express()
 
 app.use(bodyParser.json())
-
 app.use("/api", api);
 
 // app.post(`/user`, async (req, res) => {
@@ -92,8 +88,6 @@ app.use("/api", api);
 //   res.json(draftPosts)
 // })
 
-const server = app.listen(3000, () =>
-  console.log(
-    '🚀 Server ready at: http://localhost:3000\n⭐️ See sample requests: http://pris.ly/e/ts/rest-express#3-using-the-rest-api',
-  ),
-)
+const server = app.listen(3000, () => {
+    console.log( '🚀 Server ready at: http://localhost:3000\n⭐️ See sample requests: http://pris.ly/e/ts/rest-express#3-using-the-rest-api',)
+})

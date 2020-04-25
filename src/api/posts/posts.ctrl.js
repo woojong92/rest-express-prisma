@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import cuid from "cuid";
 const prisma = new PrismaClient();
 
 export const list = async (req, res) => {
@@ -12,9 +13,11 @@ export const list = async (req, res) => {
 };
 
 export const write = async (req, res) => {
+    const _cuid = cuid();
     const result = await prisma.post.create({
         data: {
-            ...req.body
+            ...req.body,
+            id: _cuid
         }
     });
     return res
